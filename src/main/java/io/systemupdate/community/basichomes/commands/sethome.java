@@ -52,8 +52,9 @@ public class sethome implements CommandExecutor{
                     sender.sendMessage(BasicHomes.instance.lang.getText("max-homes-reached"));
                     return false;
                 }
-                for(String i : homeName.split("home-contains-illegal-character")){
-                    if(BasicHomes.instance.illegalCharacters.contains(i.toLowerCase())){
+                String lowHomeName = homeName.toLowerCase();
+                for(String i : BasicHomes.instance.illegalCharacters){ // home-contains-illegal-character
+                    if(lowHomeName.contains(i)){
                         sender.sendMessage(BasicHomes.instance.lang.getText("home-contains-illegal-character"));
                         return false;
                     }

@@ -5,13 +5,11 @@ import io.systemupdate.community.basichomes.listeners.PlayerJoinListener;
 import io.systemupdate.community.basichomes.listeners.PlayerKickListener;
 import io.systemupdate.community.basichomes.listeners.PlayerQuitListener;
 import io.systemupdate.community.basichomes.utils.Lang;
-import io.systemupdate.community.basichomes.utils.UpdateChecker;
 import io.systemupdate.community.basichomes.utils.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.MetricsLite;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +24,6 @@ import java.util.UUID;
 public class BasicHomes extends JavaPlugin {
     public PluginManager pm = Bukkit.getServer().getPluginManager();
     public static BasicHomes instance;
-    public UpdateChecker updateChecker;
     public Lang lang;
 
     public HashMap<UUID, User> userProfiles = new HashMap<>();
@@ -42,14 +39,12 @@ public class BasicHomes extends JavaPlugin {
     @Override
     public void onDisable(){
         userProfiles.clear();
-        updateChecker.endChecking();
         Bukkit.getServer().getScheduler().cancelTasks(this);
     }
 
     private void registerEvents(){
         BasicHomes.instance = this;
         //this.saveDefaultConfig();
-        updateChecker = new UpdateChecker();
         lang = new Lang();
         lang.initilize();
         pm.registerEvents(new PlayerJoinListener(), this);
@@ -77,9 +72,5 @@ public class BasicHomes extends JavaPlugin {
         for(Player i : Bukkit.getServer().getOnlinePlayers()){
             userProfiles.put(i.getUniqueId(), new User(i.getUniqueId()));
         }
-        try{
-            MetricsLite metrics = new MetricsLite(this);
-            metrics.start();
-        }catch(IOException e){}
     }
 }

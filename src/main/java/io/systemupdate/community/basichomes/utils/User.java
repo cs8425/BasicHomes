@@ -4,6 +4,7 @@ import io.systemupdate.community.basichomes.BasicHomes;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
@@ -21,6 +22,7 @@ public class User{
     private HashMap<String, Location> homes = new HashMap<>();
     private File userFile;
     private YamlConfiguration userConfig;
+    private ConfigurationSection homeNode;
     private int maxHomes = 0;
 
     public User(final UUID uuid){
@@ -37,15 +39,18 @@ public class User{
                     }
                 }
                 userConfig = YamlConfiguration.loadConfiguration(userFile);
-                if(userConfig.getConfigurationSection("Home") != null){
-                    for(String i : userConfig.getConfigurationSection("Home").getKeys(false)){
+                homeNode = userConfig.getConfigurationSection("Home");
+                if(homeNode != null){
+                    for(String i : homeNode.getKeys(false)){
+                        ConfigurationSection node = homeNode.getConfigurationSection(i);
                         homes.put(i, new Location(
-                                Bukkit.getServer().getWorld(userConfig.getString("Home." + i + ".World")),
-                                userConfig.getDouble("Home." + i + ".X"),
-                                userConfig.getDouble("Home." + i + ".Y"),
-                                userConfig.getDouble("Home." + i + ".Z"),
-                                userConfig.getLong("Home." + i + ".Yaw"),
-                                userConfig.getLong("Home." + i + ".Pitch")));
+                                Bukkit.getServer().getWorld(node.getString("world")),
+                                node.getDouble("x"),
+                                node.getDouble("y"),
+                                node.getDouble("z"),
+                                (float)node.getDouble("yaw"),
+                                (float)node.getDouble("pitch") )
+                        );
                     }
                 }
             }
@@ -72,12 +77,14 @@ public class User{
             @Override
             public void run() {
                 homes.put(name, location);
-                userConfig.set("Home." + name + ".World", location.getWorld().getName());
-                userConfig.set("Home." + name + ".X", location.getX());
-                userConfig.set("Home." + name + ".Y", location.getY());
-                userConfig.set("Home." + name + ".Z", location.getZ());
-                userConfig.set("Home." + name + ".Yaw", location.getYaw());
-                userConfig.set("Home." + name + ".Pitch", location.getPitch());
+                //homeNode.set(name, location);
+                ConfigurationSection node = homeNode.createSection(name);
+                node.set("world", location.getWorld().getName());
+                node.set("x", location.getX());
+                node.set("y", location.getY());
+                node.set("z", location.getZ());
+                node.set("yaw", location.getYaw());
+                node.set("pitch", location.getPitch());
                 try{
                     userConfig.save(userFile);
                 }catch(IOException e){
@@ -94,7 +101,7 @@ public class User{
                 for(String i : homes.keySet()){
                     if(i.equalsIgnoreCase(name)){
                         homes.remove(i);
-                        userConfig.set("Home." + i, null);
+                        homeNode.set(i, null);
                         break;
                     }
                 }

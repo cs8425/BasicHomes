@@ -5,14 +5,41 @@ import io.systemupdate.community.basichomes.utils.User;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by SystemUpdate (http://systemupdate.io) on 16/06/15.
  */
-public class delhome implements CommandExecutor{
+public class delhome implements TabExecutor {
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args)
+	{
+		// check not player
+		if(!(sender instanceof Player)){
+			return null;
+		}
+
+		List<String> toreturn = new ArrayList<String>();
+		Player player = (Player)sender;
+		if(!sender.hasPermission("basichomes.home")){
+			return toreturn; // no permission, return empty
+		}
+
+		// TODO: TabComplete other user's home
+		if (args.length == 1){
+			User user = BasicHomes.instance.userProfiles.get(player.getUniqueId());
+			for(String i : user.getHomes()){
+				toreturn.add(i);
+			}
+		}
+		return toreturn;
+	}
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args){

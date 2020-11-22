@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by SystemUpdate (http://systemupdate.io) on 16/06/15.
@@ -26,8 +27,8 @@ public class BasicHomes extends JavaPlugin {
     public static BasicHomes instance;
     public Lang lang;
 
-    public HashMap<UUID, User> userProfiles = new HashMap<>();
-    public HashMap<UUID, Long> cooldown = new HashMap<>();
+    public ConcurrentHashMap<UUID, User> userProfiles = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<UUID, Long> cooldown = new ConcurrentHashMap<>();
     public List<UUID> teleporting = new ArrayList<>();
     public List<String> illegalCharacters = new ArrayList<>();
 

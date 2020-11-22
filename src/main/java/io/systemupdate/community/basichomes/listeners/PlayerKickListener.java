@@ -10,9 +10,9 @@ import org.bukkit.event.player.PlayerKickEvent;
  */
 public class PlayerKickListener implements Listener{
 
-    @EventHandler
-    public void onPlayerKick(PlayerKickEvent event){
-        BasicHomes.instance.userProfiles.remove(event.getPlayer().getUniqueId());
-        BasicHomes.instance.teleporting.remove(event.getPlayer().getUniqueId());
-    }
+	@EventHandler
+	public void onPlayerKick(PlayerKickEvent event){
+		BasicHomes.instance.userProfiles.remove(event.getPlayer().getUniqueId());
+		BasicHomes.instance.teleporting.remove(event.getPlayer().getUniqueId());
+	}
 }

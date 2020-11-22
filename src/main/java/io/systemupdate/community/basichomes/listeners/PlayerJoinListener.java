@@ -11,8 +11,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
  */
 public class PlayerJoinListener implements Listener{
 
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event){
-        BasicHomes.instance.userProfiles.put(event.getPlayer().getUniqueId(), new User(event.getPlayer().getUniqueId()));
-    }
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent event){
+		BasicHomes.instance.userProfiles.put(event.getPlayer().getUniqueId(), new User(event.getPlayer().getUniqueId()));
+	}
 }

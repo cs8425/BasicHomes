@@ -10,9 +10,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
  */
 public class PlayerQuitListener implements Listener {
 
-    @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event){
-        BasicHomes.instance.userProfiles.remove(event.getPlayer().getUniqueId());
-        BasicHomes.instance.teleporting.remove(event.getPlayer().getUniqueId());
-    }
+	@EventHandler
+	public void onPlayerQuit(PlayerQuitEvent event){
+		BasicHomes.instance.userProfiles.remove(event.getPlayer().getUniqueId());
+		BasicHomes.instance.teleporting.remove(event.getPlayer().getUniqueId());
+	}
 }

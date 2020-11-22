@@ -23,55 +23,55 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created by SystemUpdate (http://systemupdate.io) on 16/06/15.
  */
 public class BasicHomes extends JavaPlugin {
-    public PluginManager pm = Bukkit.getServer().getPluginManager();
-    public static BasicHomes instance;
-    public Lang lang;
+	public PluginManager pm = Bukkit.getServer().getPluginManager();
+	public static BasicHomes instance;
+	public Lang lang;
 
-    public ConcurrentHashMap<UUID, User> userProfiles = new ConcurrentHashMap<>();
-    public ConcurrentHashMap<UUID, Long> cooldown = new ConcurrentHashMap<>();
-    public List<UUID> teleporting = new ArrayList<>();
-    public List<String> illegalCharacters = new ArrayList<>();
+	public ConcurrentHashMap<UUID, User> userProfiles = new ConcurrentHashMap<>();
+	public ConcurrentHashMap<UUID, Long> cooldown = new ConcurrentHashMap<>();
+	public List<UUID> teleporting = new ArrayList<>();
+	public List<String> illegalCharacters = new ArrayList<>();
 
-    @Override
-    public void onEnable(){
-        this.registerEvents();
-    }
+	@Override
+	public void onEnable(){
+		this.registerEvents();
+	}
 
-    @Override
-    public void onDisable(){
-        userProfiles.clear();
-        Bukkit.getServer().getScheduler().cancelTasks(this);
-    }
+	@Override
+	public void onDisable(){
+		userProfiles.clear();
+		Bukkit.getServer().getScheduler().cancelTasks(this);
+	}
 
-    private void registerEvents(){
-        BasicHomes.instance = this;
-        //this.saveDefaultConfig();
-        lang = new Lang();
-        lang.initilize();
-        pm.registerEvents(new PlayerJoinListener(), this);
-        pm.registerEvents(new PlayerQuitListener(), this);
-        pm.registerEvents(new PlayerKickListener(), this);
-       /* if(true){//TODO Change to config boolean && /homeinfo command - creation data/creator/location (x/y/z) - Need to rework /homes, /home
-            pm.registerEvents(new PlayerMoveListener(), this);
-            pm.registerEvents(new PlayerTeleportListener(), this);
-        }*/
-        this.getCommand("basichomes").setExecutor(new basichomes());
-        this.getCommand("homes").setExecutor(new homes());
-        this.getCommand("home").setExecutor(new home());
-        this.getCommand("sethome").setExecutor(new sethome());
-        this.getCommand("delhome").setExecutor(new delhome());
-        if(this.getConfig().getConfigurationSection("illegalCharacters") != null){
-            for(String i : this.getConfig().getStringList("illegalCharacters")){
-                illegalCharacters.add(i.toLowerCase());
-            }
-        }
-        illegalCharacters.add(".");
-        File folder = new File(getDataFolder(), "userdata");
-        if(!folder.exists()){
-            folder.mkdirs();
-        }
-        for(Player i : Bukkit.getServer().getOnlinePlayers()){
-            userProfiles.put(i.getUniqueId(), new User(i.getUniqueId()));
-        }
-    }
+	private void registerEvents(){
+		BasicHomes.instance = this;
+		//this.saveDefaultConfig();
+		lang = new Lang();
+		lang.initilize();
+		pm.registerEvents(new PlayerJoinListener(), this);
+		pm.registerEvents(new PlayerQuitListener(), this);
+		pm.registerEvents(new PlayerKickListener(), this);
+	   /* if(true){//TODO Change to config boolean && /homeinfo command - creation data/creator/location (x/y/z) - Need to rework /homes, /home
+			pm.registerEvents(new PlayerMoveListener(), this);
+			pm.registerEvents(new PlayerTeleportListener(), this);
+		}*/
+		this.getCommand("basichomes").setExecutor(new basichomes());
+		this.getCommand("homes").setExecutor(new homes());
+		this.getCommand("home").setExecutor(new home());
+		this.getCommand("sethome").setExecutor(new sethome());
+		this.getCommand("delhome").setExecutor(new delhome());
+		if(this.getConfig().getConfigurationSection("illegalCharacters") != null){
+			for(String i : this.getConfig().getStringList("illegalCharacters")){
+				illegalCharacters.add(i.toLowerCase());
+			}
+		}
+		illegalCharacters.add(".");
+		File folder = new File(getDataFolder(), "userdata");
+		if(!folder.exists()){
+			folder.mkdirs();
+		}
+		for(Player i : Bukkit.getServer().getOnlinePlayers()){
+			userProfiles.put(i.getUniqueId(), new User(i.getUniqueId()));
+		}
+	}
 }

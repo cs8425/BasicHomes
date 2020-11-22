@@ -2,8 +2,6 @@ package io.systemupdate.community.basichomes.commands;
 
 import io.systemupdate.community.basichomes.BasicHomes;
 import io.systemupdate.community.basichomes.utils.User;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,17 +22,8 @@ public class homes implements CommandExecutor{
 			User user = null;
 			if(args.length >= 1){
 				if(sender.hasPermission("basichomes.homes.other") || isConsole){
-					OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(args[0]);
-					if(player != null){
-						if(player.isOnline()){
-							user = BasicHomes.instance.userProfiles.get(player.getUniqueId());
-						}else if(!player.hasPlayedBefore()){
-							sender.sendMessage(BasicHomes.instance.lang.getText("Player-Not-Found"));
-							return false;
-						}else{
-							user = new User(player.getUniqueId());
-						}
-					}else{
+					user = User.getUser(args[0]);
+					if(user == null){
 						sender.sendMessage(BasicHomes.instance.lang.getText("Player-Not-Found"));
 						return false;
 					}
@@ -48,7 +37,7 @@ public class homes implements CommandExecutor{
 			}else{
 				user = BasicHomes.instance.userProfiles.get(((Player)sender).getUniqueId());
 			}
-			int homes = user.getHomes().size();
+			int homes = user.getHomeCount();
 			if(homes == 0){
 				sender.sendMessage(BasicHomes.instance.lang.getText("homes-empty"));
 			}else{
@@ -63,9 +52,9 @@ public class homes implements CommandExecutor{
 					homes--;
 				}
 				sender.sendMessage(homesValue);
+				return true;
 			}
 		}else{
-			Bukkit.getServer().broadcastMessage("1");
 			sender.sendMessage(BasicHomes.instance.lang.getText("no-permission"));
 		}
 		return false;

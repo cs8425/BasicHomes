@@ -2,6 +2,7 @@ package io.systemupdate.community.basichomes.utils;
 
 import io.systemupdate.community.basichomes.BasicHomes;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -127,9 +128,24 @@ public class User{
 		return homes.keySet();
 	}
 
+	public int getHomeCount(){
+		return homes.size();
+	}
+
 	public int getMaxHomes(){
 		return maxHomes;
 	}
 
-
+	public static User getUser(String userName) {
+		User user = null;
+		OfflinePlayer player = Bukkit.getServer().getOfflinePlayer(userName);
+		if(player.isOnline()){
+			user = BasicHomes.instance.userProfiles.get(player.getUniqueId());
+		}else{
+			if(player.hasPlayedBefore()){
+				user = new User(player.getUniqueId());
+			}
+		}
+		return user;
+	}
 }

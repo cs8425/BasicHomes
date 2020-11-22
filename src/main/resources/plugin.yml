@@ -1,10 +1,58 @@
 name: ${project.name}
 version: ${project.version}
-author: SystemUpdate
+author: SystemUpdate, cs8425
 main: ${project.groupId}.${project.name}
 commands:
   basichomes: {}
-  sethome: {}
-  delhome: {}
-  home: {}
-  homes: {}
+  sethome:
+    description: "set current location to a new home point"
+    permission: basichomes.sethome
+    usage: "/sethome <homeName>"
+  delhome:
+    description: "delete player's home point"
+    permission: basichomes.delhome
+    usage: "/delhome <homeName>"
+  home:
+    description: "teleport to player's home point"
+    permission: basichomes.home
+    usage: "/home <homeName>"
+  homes:
+    description: "list player's home point"
+    permission: basichomes.homes
+    usage: "/homes [playerName]"
+permissions:
+  basichomes.*:
+    description: Gives access to all ${project.name} commands
+    children:
+      basichomes.sethome: true
+      basichomes.delhome: true
+      basichomes.home: true
+      basichomes.homes: true
+      basichomes.home.other: true
+  basichomes.homebasic:
+    description: Gives access to basic ${project.name} home commands
+    children:
+      basichomes.sethome: true
+      basichomes.delhome: true
+      basichomes.home: true
+      basichomes.homes: true
+      basichomes.max.5: true
+  basichomes.sethome:
+    description: Gives access to the /sethome command
+    default: op
+  basichomes.delhome:
+    description: Gives access to the /delhome command
+    default: op
+  basichomes.home:
+    description: Gives access to the /home command
+    default: op
+  basichomes.homes:
+    description: Gives access to the /homes command
+    default: op
+  basichomes.max.unlimited:
+    description: limit max home point count
+    default: op
+  basichomes.home.other:
+    description: list/edit other's home point count
+    default: op
+

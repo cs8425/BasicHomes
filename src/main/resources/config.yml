@@ -6,3 +6,22 @@ Updater: false
 
 #Setting this to false will disable metrics for this plugin, metrics can be disabled globally via editting /plugins/PluginMetrics/config.yml
 Metrics: false
+
+#cooldown for teleport to home
+tp-home-cooldown: 1000
+
+#cooldown for /back
+tp-back-cooldown: 3000
+#timeout for /back (30 mins)
+tp-back-timeout: 1800000
+
+#cooldown for teleport request
+tpa-cooldown: 5000
+
+#tpa ack timeout
+tpa-ack-timeout: 30000
+
+#overwrite request when a player have a tpa request pending
+#false will reject command for the player who have a tpa request pending
+tpa-overwrite: false
+

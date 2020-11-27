@@ -2,6 +2,7 @@ name: ${project.name}
 version: ${project.version}
 author: SystemUpdate, cs8425
 main: ${project.groupId}.${project.name}
+api-version: 1.13
 commands:
   basichomes: {}
   sethome:
@@ -20,6 +21,26 @@ commands:
     description: "list player's home point"
     permission: basichomes.homes
     usage: "/homes [playerName]"
+  tpa:
+    description: "ask a player to teleport to him/her"
+    permission: basichomes.tpa
+    usage: "/tpa <playerName>"
+  tpahere:
+    description: "ask a player to teleport to here"
+    permission: basichomes.tpahere
+    usage: "/tpahere <playerName>"
+  tpaccept:
+    description: "accept teleport request"
+    permission: basichomes.tpaccept
+    usage: "/tpaccept"
+  tpdeny:
+    description: "deny teleport request"
+    permission: basichomes.tpdeny
+    usage: "/tpdeny"
+  back:
+    description: "teleport back to place of death"
+    permission: basichomes.tpahere
+    usage: "/back"
 permissions:
   basichomes.*:
     description: Gives access to all ${project.name} commands
@@ -37,6 +58,13 @@ permissions:
       basichomes.home: true
       basichomes.homes: true
       basichomes.max.5: true
+  basichomes.tpbasic:
+    description: Gives access to basic ${project.name} teleport commands
+    children:
+      basichomes.tpa: true
+      basichomes.tpahere: true
+      basichomes.tpaccept: true
+      basichomes.tpdeny: true
   basichomes.sethome:
     description: Gives access to the /sethome command
     default: op
@@ -54,5 +82,23 @@ permissions:
     default: op
   basichomes.home.other:
     description: list/edit other's home point count
+    default: op
+  basichomes.tpa:
+    description: Gives access to the /tpa command
+    default: false
+  basichomes.tpahere:
+    description: Gives access to the /tpahere command
+    default: false
+  basichomes.tpaccept:
+    description: Gives access to the /tpaccept command
+    default: false
+  basichomes.tpdeny:
+    description: Gives access to the /tpdeny command
+    default: false
+  basichomes.back:
+    description: Gives access to the /back command
+    default: op
+  basichomes.tpworld:
+    description: Gives access to the /tpworld command
     default: op
 

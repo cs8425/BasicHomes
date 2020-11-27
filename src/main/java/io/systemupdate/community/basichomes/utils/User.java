@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
+import java.time.Instant;
 
 /**
  * Created by SystemUpdate (http://systemupdate.io) on 16/06/15.
@@ -24,6 +25,7 @@ public class User{
 	private File userFile;
 	private YamlConfiguration userConfig;
 	private ConfigurationSection homeNode;
+	private ConfigurationSection deathNode;
 	private int maxHomes = 0;
 
 	public User(final UUID uuid){
@@ -53,6 +55,11 @@ public class User{
 								(float)node.getDouble("pitch") )
 						);
 					}
+				}
+
+				deathNode = userConfig.getConfigurationSection("Death");
+				if (deathNode == null) {
+					deathNode = userConfig.createSection("Death");
 				}
 			}
 		});
@@ -134,6 +141,67 @@ public class User{
 
 	public int getMaxHomes(){
 		return maxHomes;
+	}
+
+	protected void flushProfileAsync() {
+		Bukkit.getServer().getScheduler().runTaskAsynchronously(BasicHomes.instance, new Runnable() {
+			@Override
+			public void run() {
+				try{
+					userConfig.save(userFile);
+				}catch(IOException e){
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	// save in file if player just re-connect
+	public void setLastDeath(Location loc){
+		Instant timestamp = Instant.now();
+		deathNode.set("time", timestamp.toString());
+		deathNode.set("back", false);
+
+		ConfigurationSection node = deathNode.getConfigurationSection("pos");
+		if (node == null) {
+			node = deathNode.createSection("pos");
+		}
+		node.set("world", loc.getWorld().getName());
+		node.set("x", loc.getX());
+		node.set("y", loc.getY());
+		node.set("z", loc.getZ());
+		node.set("yaw", loc.getYaw());
+		node.set("pitch", loc.getPitch());
+
+		flushProfileAsync();
+	}
+	public void clearLastDeath(){
+		deathNode.set("back", true);
+		flushProfileAsync();
+	}
+	public Location getLastDeath(){
+		if (deathNode.getBoolean("back", true)) {
+			return null;
+		}
+
+		Instant deathTime = Instant.parse(deathNode.getString("time", "1970-01-01T00:00:00.000000Z"));
+		Instant timeout = deathTime.plusMillis(BasicHomes.instance.getTpBackTimeout());
+		Instant now = Instant.now();
+		if (now.isAfter(timeout)) {
+			return null;
+		}
+
+		ConfigurationSection node = deathNode.getConfigurationSection("pos");
+		Location loc = new Location(
+			Bukkit.getServer().getWorld(node.getString("world")),
+			node.getDouble("x"),
+			node.getDouble("y"),
+			node.getDouble("z"),
+			(float)node.getDouble("yaw"),
+			(float)node.getDouble("pitch")
+		);
+
+		return loc;
 	}
 
 	public static User getUser(String userName) {

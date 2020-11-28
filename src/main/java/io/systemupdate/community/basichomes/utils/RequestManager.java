@@ -6,6 +6,10 @@ import io.systemupdate.community.basichomes.utils.User;
 //import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.ChatColor;
+
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.time.Instant;
@@ -85,7 +89,31 @@ public class RequestManager {
 		this.tpaCooldownT.put(uuid0, Instant.now().plusMillis(this.tpaCooldown));
 		p0.sendMessage(this.lang.getText("tpa-request-send"));
 		p1.sendMessage(String.format(msg, p0.getDisplayName()));
+		p1.sendMessage(this.buildAcceptOrDeny());
 		return 0;
+	}
+
+	public TextComponent buildAcceptOrDeny() {
+		TextComponent acceptBtn = new TextComponent(this.lang.getText("request-accept"));
+		acceptBtn.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpaccept") );
+		acceptBtn.setBold(true);
+		acceptBtn.setColor(ChatColor.of("#008000"));
+
+		TextComponent denyBtn = new TextComponent(this.lang.getText("request-deny"));
+		denyBtn.setClickEvent( new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/tpdeny") );
+		denyBtn.setBold(true);
+		denyBtn.setColor(ChatColor.of("#c70000"));
+
+		TextComponent hints = new TextComponent(this.lang.getText("request-select"));
+		hints.setBold(true);
+		hints.setColor(ChatColor.of("#ff7b00"));
+
+		TextComponent text = new TextComponent();
+		text.addExtra(hints);
+		text.addExtra(acceptBtn);
+		text.addExtra(new TextComponent("  "));
+		text.addExtra(denyBtn);
+		return text;
 	}
 
 	public int AckDeny(final Player p0) {

@@ -36,4 +36,7 @@ tpa-request-received: "%s want to teleport to you!"
 tpa-request-denied: "deny request from %s."
 tpa-request-been-denied: "%s deny your request!"
 tpahere-request-received: "%s want you to teleport to him/her!"
+request-select: "[click to reply]: "
+request-accept: "\u2714accept"
+request-deny: "\u2716deny"
 

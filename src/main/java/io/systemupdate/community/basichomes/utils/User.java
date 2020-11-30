@@ -30,6 +30,7 @@ public class User{
 
 	public User(final UUID uuid){
 		this.playerUUID = uuid;
+
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(BasicHomes.instance, new Runnable() {
 			@Override
 			public void run() {
@@ -55,6 +56,8 @@ public class User{
 								(float)node.getDouble("pitch") )
 						);
 					}
+				} else {
+					homeNode = userConfig.createSection("Home");
 				}
 
 				deathNode = userConfig.getConfigurationSection("Death");
@@ -63,6 +66,7 @@ public class User{
 				}
 			}
 		});
+
 		Player player = Bukkit.getServer().getPlayer(uuid);
 		if(player != null){
 			for(PermissionAttachmentInfo i : player.getEffectivePermissions()){
@@ -81,45 +85,29 @@ public class User{
 	}
 
 	public void addHome(final String name, final Location location){
-		Bukkit.getServer().getScheduler().runTaskAsynchronously(BasicHomes.instance, new Runnable() {
-			@Override
-			public void run() {
-				homes.put(name, location);
-				//homeNode.set(name, location);
-				ConfigurationSection node = homeNode.createSection(name);
-				node.set("world", location.getWorld().getName());
-				node.set("x", location.getX());
-				node.set("y", location.getY());
-				node.set("z", location.getZ());
-				node.set("yaw", location.getYaw());
-				node.set("pitch", location.getPitch());
-				try{
-					userConfig.save(userFile);
-				}catch(IOException e){
-					e.printStackTrace();
-				}
-			}
-		});
+		homes.put(name, location);
+		//homeNode.set(name, location);
+		ConfigurationSection node = homeNode.createSection(name);
+		node.set("world", location.getWorld().getName());
+		node.set("x", location.getX());
+		node.set("y", location.getY());
+		node.set("z", location.getZ());
+		node.set("yaw", location.getYaw());
+		node.set("pitch", location.getPitch());
+
+		flushProfileAsync();
 	}
 
 	public void delHome(final String name){
-		Bukkit.getServer().getScheduler().runTaskAsynchronously(BasicHomes.instance, new Runnable() {
-			@Override
-			public void run() {
-				for(String i : homes.keySet()){
-					if(i.equalsIgnoreCase(name)){
-						homes.remove(i);
-						homeNode.set(i, null);
-						break;
-					}
-				}
-				try{
-					userConfig.save(userFile);
-				}catch(IOException e){
-					e.printStackTrace();
-				}
+		for(String i : homes.keySet()){
+			if(i.equalsIgnoreCase(name)){
+				homes.remove(i);
+				homeNode.set(i, null);
+				break;
 			}
-		});
+		}
+
+		flushProfileAsync();
 	}
 
 	public Location getHome(String name){

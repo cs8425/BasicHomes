@@ -30,6 +30,7 @@ public class BasicHomes extends JavaPlugin {
 	// configs
 	public Lang lang;
 	public List<String> illegalCharacters = new ArrayList<>();
+	public int defaultMaxHomes = 0;
 	protected long tpHomeCooldown;
 	protected long tpBackCooldown;
 	protected long tpBackTimeout;
@@ -45,6 +46,7 @@ public class BasicHomes extends JavaPlugin {
 
 	@Override
 	public void onEnable(){
+		BasicHomes.instance = this;
 		this.registerEvents();
 	}
 
@@ -58,8 +60,9 @@ public class BasicHomes extends JavaPlugin {
 	}
 
 	private void registerEvents(){
-		BasicHomes.instance = this;
-		this.saveDefaultConfig();
+		if(!new File(this.getDataFolder(), "config.yml").exists()){
+			this.saveDefaultConfig();
+		}
 		lang = new Lang();
 		lang.initilize();
 
@@ -73,6 +76,7 @@ public class BasicHomes extends JavaPlugin {
 		}
 		illegalCharacters.add(".");
 
+		defaultMaxHomes = config.getInt("default-max-home", 5);
 		tpHomeCooldown = config.getLong("tp-home-cooldown", 1000);
 		tpBackCooldown = config.getLong("tp-back-cooldown", 3000);
 		tpBackTimeout = config.getLong("tp-back-timeout", 1800000L);

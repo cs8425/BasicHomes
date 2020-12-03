@@ -25,11 +25,11 @@ public class homes implements CommandExecutor{
 					user = User.getUser(args[0]);
 					if(user == null){
 						sender.sendMessage(BasicHomes.instance.lang.getText("Player-Not-Found"));
-						return false;
+						return true;
 					}
 				}else{
 					sender.sendMessage(BasicHomes.instance.lang.getText("no-permission"));
-					return false;
+					return true;
 				}
 			}else if(isConsole){
 				sender.sendMessage(BasicHomes.instance.lang.getText("homes-invalid-usage-admin"));

@@ -54,7 +54,7 @@ public class delhome implements TabExecutor {
 				userProfile = User.getUser(userName);
 				if(userProfile == null){
 					sender.sendMessage(BasicHomes.instance.lang.getText("Player-Not-Found"));
-					return false;
+					return true;
 				}
 				homeName = homeName.replaceFirst(userName + ":", "");
 			}else if(!isPlayer){
@@ -67,7 +67,7 @@ public class delhome implements TabExecutor {
 			Location homeLoc = userProfile.getHome(homeName);
 			if(homeLoc == null){
 				sender.sendMessage(BasicHomes.instance.lang.getText("home-dont-exist"));
-				return false;
+				return true;
 			}
 
 			userProfile.delHome(homeName);

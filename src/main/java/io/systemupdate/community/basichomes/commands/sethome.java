@@ -30,7 +30,7 @@ public class sethome implements CommandExecutor {
 				userProfile = User.getUser(userName);
 				if(userProfile == null){
 					sender.sendMessage(BasicHomes.instance.lang.getText("Player-Not-Found"));
-					return false;
+					return true;
 				}
 				homeName = homeName.replaceFirst(userName + ":", "");
 			}else{
@@ -39,19 +39,19 @@ public class sethome implements CommandExecutor {
 
 			if(userProfile.getHome(homeName) != null){
 				sender.sendMessage(BasicHomes.instance.lang.getText("sethome-home-exists"));
-				return false;
+				return true;
 			}
 
 			if(userProfile.getHomeCount() >= userProfile.getMaxHomes() && !player.hasPermission("basichomes.sethome.other")){
 				sender.sendMessage(BasicHomes.instance.lang.getText("max-homes-reached"));
-				return false;
+				return true;
 			}
 
 			String lowHomeName = homeName.toLowerCase();
 			for(String i : BasicHomes.instance.illegalCharacters){ // home-contains-illegal-character
 				if(lowHomeName.contains(i)){
 					sender.sendMessage(BasicHomes.instance.lang.getText("home-contains-illegal-character"));
-					return false;
+					return true;
 				}
 			}
 

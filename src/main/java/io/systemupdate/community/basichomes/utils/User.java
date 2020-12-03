@@ -26,10 +26,11 @@ public class User{
 	private YamlConfiguration userConfig;
 	private ConfigurationSection homeNode;
 	private ConfigurationSection deathNode;
-	private int maxHomes = 0;
+	private int maxHomes;
 
 	public User(final UUID uuid){
 		this.playerUUID = uuid;
+		this.maxHomes = BasicHomes.instance.defaultMaxHomes;  // should read from constructor?
 
 		Bukkit.getServer().getScheduler().runTaskAsynchronously(BasicHomes.instance, new Runnable() {
 			@Override

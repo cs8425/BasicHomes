@@ -101,4 +101,10 @@ permissions:
   basichomes.tpworld:
     description: Gives access to the /tpworld command
     default: op
+  basichomes.keepinventory:
+    description: keep inventory when player die
+    default: false
+  basichomes.keeplevel:
+    description: keep exp level when player die
+    default: false
 

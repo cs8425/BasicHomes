@@ -10,9 +10,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.Location;
 
 import java.util.UUID;
+import java.util.List;
 
 /**
  * Created by SystemUpdate (http://systemupdate.io) on 16/06/15.
@@ -20,19 +22,19 @@ import java.util.UUID;
 public class PlayerEventListener implements Listener {
 
 	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent event){
+	public void onPlayerJoin(final PlayerJoinEvent event){
 		UUID playerUUID = event.getPlayer().getUniqueId();
 		BasicHomes.instance.userProfiles.put(playerUUID, new User(playerUUID));
 	}
 
 	@EventHandler
-	public void onPlayerQuit(PlayerQuitEvent event){
+	public void onPlayerQuit(final PlayerQuitEvent event){
 		UUID playerUUID = event.getPlayer().getUniqueId();
 		clearAndFlush(playerUUID);
 	}
 
 	@EventHandler
-	public void onPlayerKick(PlayerKickEvent event){
+	public void onPlayerKick(final PlayerKickEvent event){
 		UUID playerUUID = event.getPlayer().getUniqueId();
 		clearAndFlush(playerUUID);
 	}
@@ -49,11 +51,20 @@ public class PlayerEventListener implements Listener {
 	}
 
 	@EventHandler
-	public void onPlayerDeathEvent(PlayerDeathEvent event){
+	public void onPlayerDeathEvent(final PlayerDeathEvent event){
 		Player player = event.getEntity();
 		UUID playerUUID = player.getUniqueId();
 		Location loc = player.getLocation();
 		User userProfile = BasicHomes.instance.userProfiles.get(playerUUID);
 		userProfile.setLastDeath(loc);
+
+		if (player.hasPermission("basichomes.keepinventory")) {
+			event.setKeepInventory(true);
+			List<ItemStack> drops = event.getDrops();
+			drops.clear();
+		}
+		if (player.hasPermission("basichomes.keeplevel")) {
+			event.setKeepLevel(true);
+		}
 	}
 }

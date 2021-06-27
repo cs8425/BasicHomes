@@ -7,10 +7,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by SystemUpdate (http://systemupdate.io) on 16/06/15.
@@ -72,9 +74,33 @@ public class home implements TabExecutor {
 					return true;
 				}
 
-				//TODO Cooldown + Permission to evade + countdown + permission to evade
+				// TODO: permission to tp leashEntities
+				// copy leashEntities
+				Set<LivingEntity> leashEntities = userProfile.getLeashEntity();
+				// final User userProfile0 = userProfile;
+				for(LivingEntity ent : leashEntities){
+					BasicHomes.instance.leashTPing.put(ent, ent);
+				}
+
+				// TODO: Cooldown + Permission to evade + countdown + permission to evade
 				//player.teleport(homeLoc, TeleportCause.PLUGIN);
-				player.teleportAsync(homeLoc, TeleportCause.PLUGIN);
+				player.teleportAsync(homeLoc, TeleportCause.PLUGIN).thenApply(s -> {
+					// tp leashEntities
+					BasicHomes.instance.runTaskLater(() -> {
+						for(LivingEntity ent : leashEntities){
+							/*ent.teleportAsync(homeLoc, TeleportCause.PLUGIN).thenApply(s -> {
+								ent.setLeashHolder(player);
+								return s;
+							});*/
+							ent.teleportAsync(homeLoc);
+							ent.setLeashHolder(player);
+							// userProfile0.addLeashEntity(ent);
+							BasicHomes.instance.leashTPing.remove(ent);
+						}
+					}, 4);
+					return s;
+				});
+
 				sender.sendMessage(BasicHomes.instance.lang.getText("teleported-home"));
 				return true;
 			}else{

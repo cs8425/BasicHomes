@@ -7,9 +7,11 @@ import io.systemupdate.community.basichomes.utils.User;
 import io.systemupdate.community.basichomes.utils.RequestManager;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.time.Instant;
 
 /**
@@ -38,6 +41,8 @@ public class BasicHomes extends JavaPlugin {
 
 	// runtime data
 	public ConcurrentHashMap<UUID, User> userProfiles = new ConcurrentHashMap<>();
+	public ConcurrentHashMap<UUID, User> leash = new ConcurrentHashMap<>();
+	public ConcurrentHashMap<LivingEntity, LivingEntity> leashTPing = new ConcurrentHashMap<>();
 
 	public ConcurrentHashMap<UUID, Instant> tpHomeCooldownT = new ConcurrentHashMap<>();
 	public ConcurrentHashMap<UUID, Instant> tpBackCooldownT = new ConcurrentHashMap<>();
@@ -113,5 +118,12 @@ public class BasicHomes extends JavaPlugin {
 
 	public RequestManager getRequestManager() {
 		return rm;
+	}
+
+	public void runTaskLater(Consumer<BukkitTask> task, long delay) {
+		getServer().getScheduler().runTaskLater(BasicHomes.instance, task, delay);
+	}
+	public void runTaskLater(Runnable task, long delay) {
+		getServer().getScheduler().runTaskLater(BasicHomes.instance, task, delay);
 	}
 }

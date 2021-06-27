@@ -9,6 +9,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
+import org.bukkit.event.entity.EntityUnleashEvent;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Location;
@@ -66,5 +70,47 @@ public class PlayerEventListener implements Listener {
 		if (player.hasPermission("basichomes.keeplevel")) {
 			event.setKeepLevel(true);
 		}
+	}
+
+	@EventHandler
+	public void onPlayerLeashEntity(final PlayerLeashEntityEvent event){
+		Entity ent = event.getEntity();
+		if (!(ent instanceof LivingEntity)) return;
+		UUID playerUUID = event.getPlayer().getUniqueId();
+		User userProfile = BasicHomes.instance.userProfiles.get(playerUUID);
+
+		if (event.getLeashHolder() == event.getPlayer()) { // Leash
+			userProfile.addLeashEntity((LivingEntity)ent);
+			BasicHomes.instance.leash.put(ent.getUniqueId(), userProfile);
+
+			// String info = String.format("[onPlayerLeashEntity] [%s]%s  [player:%s]", ent.getUniqueId().toString(), ent.toString(), userProfile.playerUUID.toString());
+			// BasicHomes.instance.getLogger().info(info);
+		} else {
+			unleash(userProfile, (LivingEntity)ent);
+		}
+	}
+
+	@EventHandler
+	public void onEntityUnleash(final EntityUnleashEvent event){
+		Entity ent = event.getEntity();
+		if (!(ent instanceof LivingEntity)) return;
+		UUID entUUID = ent.getUniqueId();
+		User userProfile = BasicHomes.instance.leash.get(entUUID);
+		if (userProfile == null) return;
+
+		LivingEntity tping = BasicHomes.instance.leashTPing.get(ent);
+		if (tping != null) {
+			event.setDropLeash(false);
+			return;
+		}
+		unleash(userProfile, (LivingEntity)ent);
+
+		// String info = String.format("[onEntityUnleash] [%s]%s  [player:%s]", entUUID.toString(), ent.toString(), userProfile.playerUUID.toString());
+		// BasicHomes.instance.getLogger().info(info);
+	}
+
+	private void unleash(User userProfile, LivingEntity ent){
+		userProfile.removeLeashEntity(ent);
+		BasicHomes.instance.leash.remove(ent.getUniqueId());
 	}
 }

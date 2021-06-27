@@ -6,6 +6,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
@@ -14,19 +15,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.time.Instant;
 
 /**
  * Created by SystemUpdate (http://systemupdate.io) on 16/06/15.
  */
 public class User{
-	private UUID playerUUID;
+	public UUID playerUUID;
 	private HashMap<String, Location> homes = new HashMap<>();
 	private File userFile;
 	private YamlConfiguration userConfig;
 	private ConfigurationSection homeNode;
 	private ConfigurationSection deathNode;
 	private int maxHomes;
+	private CopyOnWriteArraySet<LivingEntity> leash = new CopyOnWriteArraySet<>();
 
 	public User(final UUID uuid){
 		this.playerUUID = uuid;
@@ -191,6 +194,16 @@ public class User{
 		);
 
 		return loc;
+	}
+
+	public Set<LivingEntity> getLeashEntity(){
+		return new CopyOnWriteArraySet(leash);
+	}
+	public void addLeashEntity(LivingEntity ent){
+		leash.add(ent);
+	}
+	public void removeLeashEntity(LivingEntity ent){
+		leash.remove(ent);
 	}
 
 	public static User getUser(String userName) {
